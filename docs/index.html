@@ -160,6 +160,7 @@ footer.f{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padd
 </g>
 </g>
 </g>
+<g id="catThought" opacity="0" aria-hidden="true"><circle cx="-6" cy="-6" r="4" fill="#f3f1ea"></circle><circle cx="2" cy="-18" r="6" fill="#f3f1ea"></circle><rect x="-30" y="-64" width="82" height="42" rx="21" fill="#f3f1ea"></rect><text id="catThoughtTxt" x="11" y="-35" text-anchor="middle" font-family="var(--mono)" font-size="23" font-weight="500" fill="#0a1626">10</text></g>
 </svg><figcaption><span>Curva ilustrativa de porcentaje de dosis en profundidad</span><span class="ref">D<sub>w</sub>(z<sub>ref</sub>)</span></figcaption></figure>
 </div>
 
@@ -356,10 +357,12 @@ var DOWNLOAD_URL = 'https://github.com/CheloGodin/TRS398-pro-rev1-/raw/5ab3c3a35
   var reduce = false; try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
   if (reduce) return;
   var curve = svg.querySelector('#pddCurve'), pos = svg.querySelector('#catPos'), spin = svg.querySelector('#catSpin'),
-      legs = svg.querySelector('#catLegs'), lines = svg.querySelector('#catLines'), scr = svg.querySelector('#catScratch');
+      legs = svg.querySelector('#catLegs'), th = svg.querySelector('#catThought'), thT = svg.querySelector('#catThoughtTxt'), lines = svg.querySelector('#catLines'), scr = svg.querySelector('#catScratch');
   if (!curve || !pos) return;
   var L = curve.getTotalLength(), R = 196.157, TOPX = 87.5, TOPY = 80, FLOOR = 400;
   function ease(u) { return u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; }
+  function pop(u) { var a = clamp(u / 0.18), b = 1 - clamp((u - 0.88) / 0.12); return (1 + 0.15 * Math.sin(a * Math.PI)) * a * b; }
+  function sAtX(x) { var lo = R, hi = L; for (var i = 0; i < 40; i++) { var m = (lo + hi) / 2; if (curve.getPointAtLength(m).x < x) lo = m; else hi = m; } return (lo + hi) / 2; }
   function clamp(u) { return u < 0 ? 0 : (u > 1 ? 1 : u); }
   function ang(s) { var a = curve.getPointAtLength(Math.max(0, s - 1)), b = curve.getPointAtLength(Math.min(L, s + 1)); return Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI; }
   /* plan: lista de tramos {d: duración, f: function(u, t) -> estado} */
@@ -371,6 +374,14 @@ var DOWNLOAD_URL = 'https://github.com/CheloGodin/TRS398-pro-rev1-/raw/5ab3c3a35
       P.push({ d: 0.95, f: function (u) { var y = TOPY + (FLOOR - TOPY) * u * u; return { x: TOPX + 10 * u, y: y, rot: 0, spin: 540 * u, op: 1 }; } }); // cae de la cima
       P.push({ d: 0.9, f: function (u) { return { x: TOPX + 10, y: FLOOR, spin: 540, sq: u < 0.25 ? 0.78 : 1, op: 1 - clamp((u - 0.45) / 0.55) }; } });
     } else {
+      if (kind === 'think') {
+        var s10 = sAtX(243.3), s20 = sAtX(426.7);
+        P.push({ d: 1.7, f: function (u) { return { s: R + (s10 - R) * Math.pow(u, 1.4), op: 1, lines: 1 }; } });
+        P.push({ d: 2.0, f: function (u) { return { s: s10, op: 1, think: '10', tk: pop(u) }; } });                                               // se detiene en 10 cm y piensa «10»
+        P.push({ d: 1.4, f: function (u) { return { s: s10 + (s20 - s10) * ease(u), op: 1, lines: 1, think: '10', tk: 1 - clamp(u * 4) }; } });
+        P.push({ d: 2.0, f: function (u) { return { s: s20, op: 1, think: '20', tk: pop(u) }; } });                                               // se detiene en 20 cm y piensa «20»
+        P.push({ d: 1.9, f: function (u) { return { s: s20 + (L - s20) * Math.pow(u, 1.5), op: 1, lines: 1, think: '20', tk: 1 - clamp(u * 4) }; } });
+      } else
       P.push({ d: 4.2, f: function (u) { var s = R + (L - R) * Math.pow(u, 1.5); return { s: s, op: 1, lines: 1 }; } });                              // se desliza
       if (kind === 'climb') {
         P.push({ d: 0.5, f: function (u) { return { s: L, op: 1, hop: Math.abs(Math.sin(u * Math.PI)) * 5 }; } });
@@ -389,11 +400,12 @@ var DOWNLOAD_URL = 'https://github.com/CheloGodin/TRS398-pro-rev1-/raw/5ab3c3a35
     spin.setAttribute('transform', 'translate(0 ' + (bob + hop).toFixed(1) + ') rotate(' + (st.spin || 0).toFixed(1) + ' 0 -24)');
     pos.setAttribute('opacity', st.op === undefined ? 1 : st.op.toFixed(2));
     legs.setAttribute('opacity', st.legs ? 1 : 0); lines.setAttribute('opacity', st.lines ? 1 : 0);
+    if (st.think && st.tk > 0.01) { th.setAttribute('opacity', 1); th.setAttribute('transform', 'translate(' + (x + 18).toFixed(1) + ' ' + (y - 48).toFixed(1) + ') scale(' + st.tk.toFixed(3) + ')'); thT.textContent = st.think; } else th.setAttribute('opacity', 0);
     scr.setAttribute('opacity', st.scratch && Math.sin(t * 22) > 0 ? 1 : 0);
   }
   function at(P, t) { var acc = 0; for (var i = 0; i < P.length; i++) { if (t < acc + P[i].d) return P[i].f((t - acc) / P[i].d); acc += P[i].d; } var l = P[P.length - 1]; return l.f(1); }
   function total(P) { var a = 0; for (var i = 0; i < P.length; i++) a += P[i].d; return a; }
-  function pick() { var r = Math.random(); return r < 0.4 ? 'slide' : (r < 0.7 ? 'climb' : 'fall'); }
+  function pick() { var r = Math.random(); return r < 0.3 ? 'slide' : (r < 0.55 ? 'climb' : (r < 0.75 ? 'fall' : 'think')); }
   var P = null, t0 = 0, last = '', timer = 0;
   function start(kind) { P = plan(kind || pick()); t0 = 0; }
   window.trsCat = { hold: false, seek: function (kind, t) { var p = plan(kind); render(at(p, t), t); }, total: function (k) { return total(plan(k)); } };
@@ -402,7 +414,7 @@ var DOWNLOAD_URL = 'https://github.com/CheloGodin/TRS398-pro-rev1-/raw/5ab3c3a35
     if (!prev) prev = now; var dt = (now - prev) / 1000; prev = now; if (dt > 0.2) dt = 0.016;
     if (window.trsCat.hold) { requestAnimationFrame(tick); return; }
     if (!P) { timer -= dt; if (timer <= 0) { var k = pick(); if (k === last && Math.random() < 0.5) k = pick(); last = k; start(k); } }
-    else { t0 += dt; if (t0 >= total(P)) { P = null; timer = 0.9; pos.setAttribute('opacity', 0); } else render(at(P, t0), t0); }
+    else { t0 += dt; if (t0 >= total(P)) { P = null; timer = 0.9; pos.setAttribute('opacity', 0); th.setAttribute('opacity', 0); } else render(at(P, t0), t0); }
     requestAnimationFrame(tick);
   }
   timer = 0.3; requestAnimationFrame(tick);
