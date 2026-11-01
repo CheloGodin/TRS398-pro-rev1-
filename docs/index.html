@@ -133,18 +133,17 @@ footer.f{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padd
 <text x="60" y="20">Dosis relativa (%)</text>
 <text x="610" y="448" text-anchor="end">Profundidad en agua (cm)</text>
 </g>
-<path d="M60 272 C 65 190, 74 80, 87.5 80 C 101 80, 130 100, 151.7 121.6 S 210 165, 243.3 185.6 S 310 222, 335 235.2 S 400 262, 426.7 276.8 S 490 300, 518.3 308.8 S 590 328, 610 332.8" fill="none" stroke="#f3f1ea" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path id="pddCurve" d="M60 272 C 65 190, 74 80, 87.5 80 C 101 80, 130 100, 151.7 121.6 S 210 165, 243.3 185.6 S 310 222, 335 235.2 S 400 262, 426.7 276.8 S 490 300, 518.3 308.8 S 590 328, 610 332.8" fill="none" stroke="#f3f1ea" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>
 <circle cx="87.5" cy="80" r="6.5" fill="#ff4b4b" stroke="#0a1626" stroke-width="2"></circle>
 <text x="87.5" y="58" text-anchor="middle" font-family="var(--mono)" font-size="14" font-weight="500" fill="#ff6b6b">d<tspan font-size="10" dy="3">max</tspan></text>
 <line x1="243.3" y1="70" x2="243.3" y2="400" stroke="#f5a43a" stroke-width="1.8" stroke-dasharray="6 6"></line>
 <circle cx="243.3" cy="185.6" r="7" fill="#f5a43a"></circle>
 <text x="258" y="166" font-family="var(--mono)" font-size="15" font-weight="500" fill="#f5a43a"><tspan font-style="italic">z</tspan><tspan font-size="11" dy="4">ref</tspan><tspan dy="-4"> = 10 cm</tspan></text>
-<g aria-hidden="true" class="cat">
-<animateMotion id="trs-cat-motion" dur="9s" repeatCount="indefinite" fill="freeze" rotate="auto" calcMode="spline" keyPoints="0;0;0.2506;0.2506;1;1" keyTimes="0;0.04;0.2;0.27;0.8;1" keySplines="0 0 1 1;0.35 0 0.65 1;0 0 1 1;0.5 0 0.85 0.6;0 0 1 1" path="M60 272 C 65 190, 74 80, 87.5 80 C 101 80, 130 100, 151.7 121.6 S 210 165, 243.3 185.6 S 310 222, 335 235.2 S 400 262, 426.7 276.8 S 490 300, 518.3 308.8 S 590 328, 610 332.8"></animateMotion>
-<animate id="trs-cat-fade" attributeName="opacity" dur="9s" repeatCount="indefinite" fill="freeze" values="0;1;1;0;0" keyTimes="0;0.04;0.8;0.88;1"></animate>
+<g aria-hidden="true" class="cat" id="catPos" opacity="0"><g id="catSpin">
+<g id="catScratch" opacity="0" stroke="#f5a43a" stroke-width="2.4" stroke-linecap="round"><line x1="40" y1="-56" x2="52" y2="-44"></line><line x1="36" y1="-46" x2="48" y2="-34"></line><line x1="42" y1="-36" x2="54" y2="-24"></line></g>
 <g transform="translate(0 -3) scale(0.8)">
-<g stroke="#f3f1ea" stroke-width="6" stroke-linecap="round" opacity="0"><animate attributeName="opacity" dur="9s" repeatCount="indefinite" calcMode="discrete" values="0;1;0" keyTimes="0;0.04;0.2"></animate><line x1="-16" y1="-4" x2="-16" y2="12"><animateTransform attributeName="transform" type="rotate" values="-45 -16 -4;45 -16 -4;-45 -16 -4" dur="0.18s" repeatCount="indefinite"></animateTransform></line><line x1="10" y1="-4" x2="10" y2="12"><animateTransform attributeName="transform" type="rotate" values="45 10 -4;-45 10 -4;45 10 -4" dur="0.18s" repeatCount="indefinite"></animateTransform></line></g>
-<g stroke="rgba(243,241,234,0.45)" stroke-width="2.5" stroke-linecap="round">
+<g id="catLegs" stroke="#f3f1ea" stroke-width="6" stroke-linecap="round" opacity="0"><line x1="-16" y1="-4" x2="-16" y2="12"><animateTransform attributeName="transform" type="rotate" values="-45 -16 -4;45 -16 -4;-45 -16 -4" dur="0.18s" repeatCount="indefinite"></animateTransform></line><line x1="10" y1="-4" x2="10" y2="12"><animateTransform attributeName="transform" type="rotate" values="45 10 -4;-45 10 -4;45 10 -4" dur="0.18s" repeatCount="indefinite"></animateTransform></line></g>
+<g id="catLines" stroke="rgba(243,241,234,0.45)" stroke-width="2.5" stroke-linecap="round">
 <line x1="-62" y1="-8" x2="-84" y2="-8"></line>
 <line x1="-70" y1="-24" x2="-98" y2="-24"></line>
 <line x1="-62" y1="-40" x2="-82" y2="-40"></line>
@@ -158,6 +157,7 @@ footer.f{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padd
 <path d="M-4 -54 L 1 -52 L -4 -50 Z" fill="#f5a43a"></path>
 <path d="M12 -54 L 7 -52 L 12 -50 Z" fill="#f5a43a"></path>
 <path d="M2 -47 L 6 -47 L 4 -44 Z" fill="#f5a43a"></path>
+</g>
 </g>
 </g>
 </svg><figcaption><span>Curva ilustrativa de porcentaje de dosis en profundidad</span><span class="ref">D<sub>w</sub>(z<sub>ref</sub>)</span></figcaption></figure>
@@ -346,6 +346,66 @@ var DOWNLOAD_URL = 'https://github.com/CheloGodin/TRS398-pro-rev1-/raw/5ab3c3a35
   var base = window.applyLang; window.applyLang = function (l) { base(l); setT(l); };
   v.addEventListener('play', function () { var p = document.getElementById('carPlay'); if (p && p.getAttribute('aria-pressed') !== 'true') p.click(); });
   setT(document.documentElement.lang || 'es');
+})();
+
+/* Gatito del gráfico: cada vuelta elige al azar su recorrido.
+   A) sube corriendo y se desliza por la curva; B) lo mismo y luego trepa de regreso rasguñando la curva como un árbol;
+   C) sube corriendo y se cae de la cima directo hacia abajo. */
+(function () {
+  var svg = document.querySelector('svg.pdd'); if (!svg) return;
+  var reduce = false; try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  if (reduce) return;
+  var curve = svg.querySelector('#pddCurve'), pos = svg.querySelector('#catPos'), spin = svg.querySelector('#catSpin'),
+      legs = svg.querySelector('#catLegs'), lines = svg.querySelector('#catLines'), scr = svg.querySelector('#catScratch');
+  if (!curve || !pos) return;
+  var L = curve.getTotalLength(), R = 196.157, TOPX = 87.5, TOPY = 80, FLOOR = 400;
+  function ease(u) { return u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; }
+  function clamp(u) { return u < 0 ? 0 : (u > 1 ? 1 : u); }
+  function ang(s) { var a = curve.getPointAtLength(Math.max(0, s - 1)), b = curve.getPointAtLength(Math.min(L, s + 1)); return Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI; }
+  /* plan: lista de tramos {d: duración, f: function(u, t) -> estado} */
+  function plan(kind) {
+    var P = [];
+    P.push({ d: 1.5, f: function (u) { var s = R * ease(u); return { s: s, op: clamp(u * 5), legs: 1, lines: 1, bob: 1 }; } });                 // sube corriendo
+    P.push({ d: 0.8, f: function (u) { return { s: R, op: 1, hop: Math.abs(Math.sin(u * Math.PI * 2)) * 7 }; } });                                   // celebra arriba
+    if (kind === 'fall') {
+      P.push({ d: 0.95, f: function (u) { var y = TOPY + (FLOOR - TOPY) * u * u; return { x: TOPX + 10 * u, y: y, rot: 0, spin: 540 * u, op: 1 }; } }); // cae de la cima
+      P.push({ d: 0.9, f: function (u) { return { x: TOPX + 10, y: FLOOR, spin: 540, sq: u < 0.25 ? 0.78 : 1, op: 1 - clamp((u - 0.45) / 0.55) }; } });
+    } else {
+      P.push({ d: 4.2, f: function (u) { var s = R + (L - R) * Math.pow(u, 1.5); return { s: s, op: 1, lines: 1 }; } });                              // se desliza
+      if (kind === 'climb') {
+        P.push({ d: 0.5, f: function (u) { return { s: L, op: 1, hop: Math.abs(Math.sin(u * Math.PI)) * 5 }; } });
+        P.push({ d: 6.5, f: function (u) { var s = L - (L - R) * ease(u); return { s: s, op: 1, flip: 1, legs: 1, scratch: 1, bob: 1.6 }; } });    // trepa rasguñando
+        P.push({ d: 0.7, f: function (u) { return { s: R, op: 1, flip: 1, hop: Math.abs(Math.sin(u * Math.PI * 2)) * 6 }; } });
+      }
+      P.push({ d: 0.6, f: function (u) { var s = (kind === 'climb') ? R : L; return { s: s, op: 1 - u, flip: kind === 'climb' ? 1 : 0 }; } });
+    }
+    return P;
+  }
+  function render(st, t) {
+    var x, y, rot = 0, sx = st.flip ? -1 : 1;
+    if (st.s !== undefined) { var pt = curve.getPointAtLength(st.s); x = pt.x; y = pt.y; rot = ang(st.s); } else { x = st.x; y = st.y; }
+    var bob = st.bob ? -Math.abs(Math.sin(t * 11)) * 2.2 * st.bob : 0, hop = st.hop ? -st.hop : 0;
+    pos.setAttribute('transform', 'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') rotate(' + rot.toFixed(1) + ') scale(' + sx + ' ' + (st.sq || 1) + ')');
+    spin.setAttribute('transform', 'translate(0 ' + (bob + hop).toFixed(1) + ') rotate(' + (st.spin || 0).toFixed(1) + ' 0 -24)');
+    pos.setAttribute('opacity', st.op === undefined ? 1 : st.op.toFixed(2));
+    legs.setAttribute('opacity', st.legs ? 1 : 0); lines.setAttribute('opacity', st.lines ? 1 : 0);
+    scr.setAttribute('opacity', st.scratch && Math.sin(t * 22) > 0 ? 1 : 0);
+  }
+  function at(P, t) { var acc = 0; for (var i = 0; i < P.length; i++) { if (t < acc + P[i].d) return P[i].f((t - acc) / P[i].d); acc += P[i].d; } var l = P[P.length - 1]; return l.f(1); }
+  function total(P) { var a = 0; for (var i = 0; i < P.length; i++) a += P[i].d; return a; }
+  function pick() { var r = Math.random(); return r < 0.4 ? 'slide' : (r < 0.7 ? 'climb' : 'fall'); }
+  var P = null, t0 = 0, last = '', timer = 0;
+  function start(kind) { P = plan(kind || pick()); t0 = 0; }
+  window.trsCat = { hold: false, seek: function (kind, t) { var p = plan(kind); render(at(p, t), t); }, total: function (k) { return total(plan(k)); } };
+  var prev = 0;
+  function tick(now) {
+    if (!prev) prev = now; var dt = (now - prev) / 1000; prev = now; if (dt > 0.2) dt = 0.016;
+    if (window.trsCat.hold) { requestAnimationFrame(tick); return; }
+    if (!P) { timer -= dt; if (timer <= 0) { var k = pick(); if (k === last && Math.random() < 0.5) k = pick(); last = k; start(k); } }
+    else { t0 += dt; if (t0 >= total(P)) { P = null; timer = 0.9; pos.setAttribute('opacity', 0); } else render(at(P, t0), t0); }
+    requestAnimationFrame(tick);
+  }
+  timer = 0.3; requestAnimationFrame(tick);
 })();
 </script>
 </body></html>
