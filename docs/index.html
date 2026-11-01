@@ -91,6 +91,21 @@ footer.f{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padd
 .dot[aria-current="true"]{background:var(--amber);border-color:var(--amber)}
 .car-note{margin:0;text-align:center;justify-self:center}
 @media (prefers-reduced-motion:reduce){.track{transition:none}}
+
+.talk{display:flex;align-items:center;padding-left:14px;gap:clamp(20px,4vw,48px);padding-block:44px;border-top:1px solid var(--line)}
+.catbtn{flex:0 0 auto;width:clamp(120px,18vw,190px);padding:0;border:0;background:transparent;cursor:pointer;border-radius:16px}
+.catbtn svg{display:block;width:100%;height:auto;overflow:visible}
+.catbtn:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
+#catHeadG{transform-box:view-box;transform-origin:100px 150px;transition:transform .16s ease-out}
+#catEyes{transform-box:fill-box;transform-origin:center;transition:transform .08s}
+#catEyes.blink{transform:scaleY(.08)}
+#catMouth{transition:ry .07s ease-out}
+.say{position:relative;flex:1 1 auto;min-width:0;max-width:44rem;display:grid;gap:10px;padding:26px 30px;border:1.5px solid rgba(245,164,58,.7);border-radius:26px;background:var(--bg2);font-size:clamp(18px,2.1vw,23px);line-height:1.45}
+.say:before{content:"";position:absolute;left:-13px;top:46px;width:22px;height:22px;background:var(--bg2);border-left:1.5px solid rgba(245,164,58,.7);border-bottom:1.5px solid rgba(245,164,58,.7);transform:rotate(45deg)}
+.say p{margin:0;color:var(--ink)}
+.say p:last-child{color:var(--amber);font-weight:600}
+.say .off{color:transparent}
+@media (max-width:640px){.talk{flex-direction:column;align-items:flex-start}.say:before{left:46px;top:-13px;transform:rotate(135deg)}}
 </style>
 </head><body>
 <div class="wrap" translate="no">
@@ -163,6 +178,29 @@ footer.f{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padd
 <g id="catThought" opacity="0" aria-hidden="true"><circle cx="-6" cy="-6" r="4" fill="#f3f1ea"></circle><circle cx="2" cy="-18" r="6" fill="#f3f1ea"></circle><rect x="-30" y="-64" width="82" height="42" rx="21" fill="#f3f1ea"></rect><text id="catThoughtTxt" x="11" y="-35" text-anchor="middle" font-family="var(--mono)" font-size="23" font-weight="500" fill="#0a1626">10</text></g>
 </svg><figcaption><span>Curva ilustrativa de porcentaje de dosis en profundidad</span><span class="ref">D<sub>w</sub>(z<sub>ref</sub>)</span></figcaption></figure>
 </div>
+
+<section class="talk" id="idea">
+  <button type="button" class="catbtn" id="talkCat" aria-label="Repetir el mensaje">
+    <svg viewBox="0 0 200 190" aria-hidden="true">
+      <g id="catHeadG">
+        <path d="M32 98 L36 14 L94 56 Q100 55 106 56 L164 14 L168 98 Q176 130 150 158 Q124 182 100 182 Q76 182 50 158 Q24 130 32 98 Z" fill="#f3f1ea"></path>
+        <path d="M46 78 L47 38 L78 60 Q58 64 46 78 Z M154 78 L153 38 L122 60 Q142 64 154 78 Z" fill="#c9c6bb"></path>
+        <g id="catEyes"><ellipse cx="68" cy="104" rx="14" ry="16" fill="#f5a43a"></ellipse><ellipse cx="132" cy="104" rx="14" ry="16" fill="#f5a43a"></ellipse>
+          <ellipse cx="68" cy="104" rx="3.6" ry="13" fill="#0a1626"></ellipse><ellipse cx="132" cy="104" rx="3.6" ry="13" fill="#0a1626"></ellipse></g>
+        <path d="M92 128 L108 128 L100 138 Z" fill="#f5a43a"></path>
+        <path d="M100 138 L100 143 M100 143 Q92 152 83 146 M100 143 Q108 152 117 146" fill="none" stroke="#0a1626" stroke-width="3" stroke-linecap="round"></path>
+        <ellipse id="catMouth" cx="100" cy="153" rx="11" ry="1.5" fill="#0a1626"></ellipse>
+        <g stroke="#f3f1ea" stroke-width="3" stroke-linecap="round"><line x1="26" y1="132" x2="-8" y2="124"></line><line x1="26" y1="144" x2="-10" y2="148"></line><line x1="174" y1="132" x2="208" y2="124"></line><line x1="174" y1="144" x2="210" y2="148"></line></g>
+      </g>
+    </svg>
+  </button>
+  <div class="say" id="say" aria-live="off">
+    <p><span class="on"></span><span class="off">La idea es que no utilices planillas.</span></p>
+    <p><span class="on"></span><span class="off">Luego, la idea es que solo elijas la energía y pongas las lecturas para saber el output, con todo ya precargado.</span></p>
+    <p><span class="on"></span><span class="off">La idea es que tengas un registro histórico.</span></p>
+    <p><span class="on"></span><span class="off">Que tengas un tracker.</span></p>
+  </div>
+</section>
 
 <section class="s" id="que-hace">
   <h2>Qué hace<small>Del cálculo al informe firmado, en el mismo lugar y con la trazabilidad de cada paso.</small></h2>
@@ -418,6 +456,48 @@ var DOWNLOAD_URL = 'https://github.com/CheloGodin/TRS398-pro-rev1-/raw/5ab3c3a35
     requestAnimationFrame(tick);
   }
   timer = 0.3; requestAnimationFrame(tick);
+})();
+
+/* Gato que habla: escribe el mensaje frase por frase moviendo la boca según las letras. Se reproduce al verse y al tocar al gato. */
+(function () {
+  var SAY = {
+    es: ["La idea es que no utilices planillas.", "Luego, la idea es que solo elijas la energía y pongas las lecturas para saber el output, con todo ya precargado.", "La idea es que tengas un registro histórico.", "Que tengas un tracker."],
+    pt: ["A ideia é que você não use planilhas.", "Depois, a ideia é que você só escolha a energia e coloque as leituras para saber o output, com tudo já pré-carregado.", "A ideia é que você tenha um registro histórico.", "Que você tenha um tracker."],
+    en: ["The idea is that you don't use spreadsheets.", "Then, the idea is that you just pick the energy and enter the readings to get the output, with everything already preloaded.", "The idea is that you keep a historical record.", "That you have a tracker."]
+  };
+  var LBL = { es: 'Repetir el mensaje', pt: 'Repetir a mensagem', en: 'Replay the message' };
+  var box = document.getElementById('say'), btn = document.getElementById('talkCat'), mouth = document.getElementById('catMouth'), head = document.getElementById('catHeadG'), eyes = document.getElementById('catEyes');
+  if (!box || !btn) return;
+  var ps = box.querySelectorAll('p'), token = 0, started = false, timer = 0;
+  var reduce = false; try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  function lang() { var l = document.documentElement.lang; return SAY[l] ? l : 'es'; }
+  function paint(i, n) { var t = SAY[lang()][i], sp = ps[i].children; sp[0].textContent = t.slice(0, n); sp[1].textContent = t.slice(n); }
+  function paintAll(full) { for (var i = 0; i < ps.length; i++) paint(i, full ? SAY[lang()][i].length : 0); btn.setAttribute('aria-label', LBL[lang()]); }
+  function mouthFor(c) { c = c.toLowerCase(); if ('aáàâãoóòôõ'.indexOf(c) >= 0) return 10; if ('eéêuúüiíy'.indexOf(c) >= 0) return 6.5; if ('mbp'.indexOf(c) >= 0) return 1.5; if (c === ' ' || c === ',' || c === '.') return 1.5; return 4; }
+  function setMouth(v) { mouth.setAttribute('ry', v); mouth.setAttribute('rx', v > 8 ? 11 : 10); }
+  function stop() { token++; clearTimeout(timer); setMouth(1.5); head.style.transform = ''; }
+  function play() {
+    stop(); var my = token; paintAll(false);
+    if (reduce) { paintAll(true); return; }
+    var i = 0, n = 0, flip = 1;
+    (function step() {
+      if (my !== token) return;
+      var t = SAY[lang()][i]; if (i >= ps.length) { setMouth(1.5); head.style.transform = ''; return; }
+      if (n < t.length) {
+        n++; paint(i, n); var c = t.charAt(n - 1); setMouth(mouthFor(c));
+        if (n % 6 === 0) { flip = -flip; head.style.transform = 'rotate(' + (flip * 2.2) + 'deg)'; }
+        timer = setTimeout(step, c === ',' ? 200 : (c === '.' ? 260 : 52));
+      } else { setMouth(1.5); head.style.transform = ''; i++; n = 0; timer = setTimeout(step, 650); }
+    })();
+  }
+  btn.addEventListener('click', play);
+  paintAll(true);
+  try {
+    var io = new IntersectionObserver(function (es) { if (!started && es[0].isIntersecting && es[0].intersectionRatio >= 0.5) { started = true; io.disconnect(); play(); } }, { threshold: [0.5] });
+    io.observe(box);
+  } catch (e) { started = true; }
+  if (!reduce) setInterval(function () { eyes.classList.add('blink'); setTimeout(function () { eyes.classList.remove('blink'); }, 120); }, 4200);
+  var base = window.applyLang; window.applyLang = function (l) { base(l); if (started) { stop(); paintAll(true); } else paintAll(true); };
 })();
 </script>
 </body></html>
